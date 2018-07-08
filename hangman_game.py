@@ -102,12 +102,12 @@ def play_hangman(word, player):
                 print('Wrong!')
                 guess_left -= 1
 
-        if guess_left == 0:
-            win = False
-        elif '_' not in blanks_list:
-            win = True
+    if guess_left == 0:
+        win = False
+    elif '_' not in blanks_list:
+        win = True
 
-        return win
+    return win
                 
 
 #Main Game Loop
@@ -127,10 +127,13 @@ while game == 1:
         
             a = play_hangman(user_word, current_player)
             if a:
-                print('Congratulations', current_player, 'you won!!')
+                print('Congratulations', current_player)
             else:
                 print('Sorry',current_player,'maybe next time')
-            print(score)
+            for i in range(len(player_names)):
+                print(player_names[i], 'your score is', score[i])
+                i+=1
+                
             ix += 1
             
             
