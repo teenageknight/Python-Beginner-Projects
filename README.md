@@ -1,2 +1,2 @@
 # Python-Beginner-Projects
-Some easy beginner prodjects that help me better understand how to use python through application. 
+Some easy beginner projects that help me better understand how to use python through application. 
