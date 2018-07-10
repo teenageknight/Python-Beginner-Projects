@@ -1,3 +1,6 @@
+# From PhnB GitHub
+# https://github.com/PhanB/hangman
+
 hangman = [
 '''
    _ _
