@@ -116,7 +116,7 @@ def drawMan(strike):
         print('You have no strikes')
 
     # Creates a function for a victory or a loss
-def banners(win):
+def banners(win, word):
     if win:
         print('############################################################')
         print('#                                                          #')
@@ -126,10 +126,11 @@ def banners(win):
     else:
         drawMan(7)
         print('############################################################')
-        print('#                                                          #')
-        print('#                      You Got Hung                        #')
-        print('#                       You Lose                           #')
-        print('#                                                          #')
+        print('#                                                          ')
+        print('#                      You Got Hung                        ')
+        print('#                       You Lose                           ')
+        print('#   The word was: {0}' .format(word))
+        print('#                                                          ')
         print('############################################################')
 
 
@@ -183,6 +184,6 @@ def main(win, file_name):
             strikes += 1
             print('{0} is a wrong guess! Try another letter.\n'.format(guess.upper()))
 
-    banners(game_won)
+    banners(game_won, word)
 
 main(False,False)
