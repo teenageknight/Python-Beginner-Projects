@@ -112,6 +112,28 @@ def drawMan(strike):
         print(" / \  |")
         print("      |")
         print("==========")
+    else:
+        print('You have no strikes')
+
+    # Creates a function for a victory or a loss
+def banners(win):
+    if win:
+        print('############################################################')
+        print('#                                                          #')
+        print('#       Congratulations, you have won the game!            #')
+        print('#                                                          #')
+        print('############################################################')
+    else:
+        drawMan(7)
+        print('############################################################')
+        print('#                                                          #')
+        print('#                      You Got Hung                        #')
+        print('#                       You Lose                           #')
+        print('#                                                          #')
+        print('############################################################')
+
+
+
 
 
 # Define Main Game loop
@@ -133,17 +155,34 @@ def main(win, file_name):
 
     while strikes < 7 and game_won == False:
 
+        drawMan(strikes)
+        print(blanks)
+        print(guessed_letter)
+
         guess = input('Enter a letter: ')
 
         if guess == ' ' or guess == '' or len(guess) != 1:
             print('\nPlease only guess only one letter at a time.')
             continue
 
-        if guess in guess.lower and not(guess in guessed_letter):
+        if guess in word.lower() and not(guess in guessed_letter):
             guessed_letter.append(guess)
+            blanks = word
+            for letter in word:
+                if (not (letter.lower() in word) or not(letter.lower() in guessed_letter)) and letter != ' ':
+                    blanks = blanks.replace(letter, ' __ ')
+
+            if blanks == word:
+                game_won = True
+            else:
+                print("Nice! {0} is in the word. Try another letter.\n".format(guess.upper()))
         elif guess in guessed_letter:
-            print('You already guessed the letter {0}. Try again.' .format(guess.upper))
+            print('\nYou already guessed the letter {0}. Try again.\n' .format(guess.upper()))
         else:
-            pass
+            guessed_letter.append(guess)
+            strikes += 1
+            print('{0} is a wrong guess! Try another letter.\n'.format(guess.upper()))
+
+    banners(game_won)
 
 main(False,False)
