@@ -17,7 +17,6 @@
 
 #Import required libraries and functions
 from random import randint
-from art import *
 
 #getWordFile()
 #
@@ -49,6 +48,7 @@ def chooseWord(file_name):
     word_len = len(chosen_word)
     return chosen_word, word_len
 
+# Possibly move this to new art file
 def drawMan(strike):
     if strike == 1:
         print("   _ _")
@@ -115,11 +115,10 @@ def drawMan(strike):
 
 
 # Define Main Game loop
-def main():
-    file = getWordFile()
-    word, length = chooseWord(file)
-    print(word)
-    print(length)
-    print(hangman)
+def main(win, file_name):
+    # If there is no word list, then get one
+    if not(file_name):
+        file_name = getWordFile()
 
-main()
+    # Choose a random word and store it and the length
+    word, word_len = chooseWord(file_name)
