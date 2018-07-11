@@ -122,3 +122,28 @@ def main(win, file_name):
 
     # Choose a random word and store it and the length
     word, word_len = chooseWord(file_name)
+
+    blanks = '__'
+    for i in range(word_len-1):
+        blanks = blanks + ' __'
+
+    strikes = 0
+    guessed_letter=[]
+    game_won = False
+
+    while strikes < 7 and game_won == False:
+
+        guess = input('Enter a letter: ')
+
+        if guess == ' ' or guess == '' or len(guess) != 1:
+            print('\nPlease only guess only one letter at a time.')
+            continue
+
+        if guess in guess.lower and not(guess in guessed_letter):
+            guessed_letter.append(guess)
+        elif guess in guessed_letter:
+            print('You already guessed the letter {0}. Try again.' .format(guess.upper))
+        else:
+            pass
+
+main(False,False)
