@@ -1,13 +1,23 @@
 # Practice for OOP programing in python using a card game
 # https://github.com/teenageknight/Python-Beginner-Projects
 
-from random import *
+import random
 
 # Defines Global variables
 
+# Defines Deck Class
+class Deck(object):
 
-class player:
-    """Creates a Player for the guess a number game"""
-    def __init__(self, name, score = 0):
-        super(player, self).__init__()
-        self.name = name
+    def __init__(self, ranks=None, suits=None):
+
+        if ranks is None:
+            ranks = range(2,15)
+
+        if suits is None:
+
+
+    def shuffle(self):
+        pass
+
+    def deal(self, numCards):
+        pass
