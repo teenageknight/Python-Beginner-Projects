@@ -11,3 +11,15 @@ Let us assume the following comma separated input sequence is given to the progr
 The output of the program should be:
 18,22,24
 '''
+
+import math
+c=50
+h=30
+d=str(input())
+d = d.split(',')
+q = []
+for i in range(len(d)):
+    d[i] = int(d[i])
+    x = math.sqrt(8(2*c*d[i])/h)
+    q.append(x)
+print(q)
