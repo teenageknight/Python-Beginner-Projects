@@ -37,7 +37,7 @@ while not gameExit:
             gameExit = True
         gameDisplay.fill(white)
         # rect(surface,color, [x location, y location, width, height])
-        pygame.draw.rect(gameDisplay, black, [400,300,10,10])
+        pygame.draw.rect(gameDisplay, black, [400,400,10,10])
         pygame.display.update()
 
 pygame.quit()
