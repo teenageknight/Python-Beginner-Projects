@@ -60,6 +60,7 @@ def drawMenu():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
+            # This event makes the button change font when hovered over.
             if event.type == pygame.MOUSEMOTION:
                 mouse_position = pygame.mouse.get_pos()
                 if pygame.Rect.collidepoint(startButton, mouse_position):
@@ -78,7 +79,7 @@ def drawMenu():
                     pygame.Surface.blit(gameDisplay, textStart, (400 - textStart.get_width() // 2, 150 - textStart.get_height() // 2))
                     pygame.Surface.blit(gameDisplay, textQuit, (400 - textQuit.get_width() // 2, 400 - textQuit.get_height() // 2))
                     pygame.display.update()
-
+            # This event is the button logic
             if event.type == pygame.MOUSEBUTTONDOWN:
                 clickPos = pygame.mouse.get_pos()
                 print(clickPos)
@@ -111,15 +112,19 @@ def game_loop():
     number_dots_eaten = 0
     speed = 10
     gameExit = False
+
+    # Run Menu
     drawMenu()
+
+    gameDisplay.fill(white)
+    gameBorders = pygame.draw.rect(gameDisplay, black, [50,50,700,500], 2)
+    pygame.display.update()
 
     while not gameExit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
-        gameDisplay.fill(white)
 
-        pygame.display.update()
 
 
 # Main Function Calls
