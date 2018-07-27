@@ -15,6 +15,7 @@
 
 # Imports
 import pygame
+from random import *
 
 '''
 ##################
@@ -41,6 +42,9 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Snake Game')
 pygame.display.update()
 
+# Initalizes the font
+font = pygame.font.SysFont('comicsansms', 32)
+
 def drawMenu():
     # Play new game button
     user_pick = False
@@ -48,7 +52,6 @@ def drawMenu():
     startButton = pygame.draw.rect(gameDisplay, green, [250,100,300,100])
     quitButton = pygame.draw.rect(gameDisplay, green, [250,350,300,100])
 
-    font = pygame.font.SysFont('comicsansms', 32)
     textStart = pygame.font.Font.render(font,'Start', 1, white)
     textQuit = pygame.font.Font.render(font,'Quit', 1, white)
     print(textStart,textQuit)
@@ -93,13 +96,29 @@ def drawMenu():
                     quit()
 
 
+class Player():
+    """docstring for Making the Player."""
+    x = 400
+    y = 300
+    speed = 1
 
-def player_snake(xPos,yPos,numDotsEaten):
-    x = xPos
-    y = yPos
+    # Movement Functions
+    def moveLeft(self):
+        self.x = self.x - self.speed
+    def moveRight(self):
+        self.x = self.x + self.speed
+    def moveDown(self):
+        self.y = self.y - self.speed
+    def moveUp(self):
+        self.y = self.y + self.speed
 
-    playerSpeed = 0 # FIXME: Add in speed in relation to number of dots numDotsEaten
-    pygame.draw.rect(gameDisplay,black, [x,y,10,10])
+
+# def player_snake(xPos,yPos,numDotsEaten):
+#     x = xPos
+#     y = yPos
+#
+#     playerSpeed = 0 # FIXME: Add in speed in relation to number of dots numDotsEaten
+#     pygame.draw.rect(gameDisplay,black, [x,y,10,10])
 
 def game_intro():
     '''
@@ -109,22 +128,32 @@ def game_intro():
 
 def game_loop():
     # Globals in the def
-    number_dots_eaten = 0
-    speed = 10
+    numberOfDots = 0
+    score = 0
     gameExit = False
 
     # Run Menu
     drawMenu()
 
     gameDisplay.fill(white)
+
     gameBorders = pygame.draw.rect(gameDisplay, black, [50,50,700,500], 2)
+
+    scoreRect = pygame.draw.rect(gameDisplay, white, [550,550,250,50], 1)
+    scoreText = pygame.font.Font.render(font,'Score: {}'.format(score), 1, black)
+    pygame.Surface.blit(gameDisplay, scoreText, (550,550))
+
+    player = Player()
+
     pygame.display.update()
 
     while not gameExit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
-
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_d or event.key == K_LEFT:
+                    snake.moveLeft()
 
 
 # Main Function Calls
