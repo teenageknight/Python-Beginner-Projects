@@ -96,21 +96,27 @@ def drawMenu():
                     quit()
 
 
-class Player():
+class Player(x,y):
     """docstring for Making the Player."""
-    x = 400
-    y = 300
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    location = (x,y)
     speed = 1
 
     # Movement Functions
     def moveLeft(self):
-        self.x = self.x - self.speed
+        self.x = self.x - self.seed
+        return self.x, self.y
     def moveRight(self):
         self.x = self.x + self.speed
+        return self.x, self.y
     def moveDown(self):
         self.y = self.y - self.speed
+        return self.x, self.y
     def moveUp(self):
         self.y = self.y + self.speed
+        return self.x, self.y
 
 
 # def player_snake(xPos,yPos,numDotsEaten):
@@ -131,7 +137,8 @@ def game_loop():
     numberOfDots = 0
     score = 0
     gameExit = False
-
+    x = 400
+    y = 300
     # Run Menu
     drawMenu()
 
@@ -143,7 +150,7 @@ def game_loop():
     scoreText = pygame.font.Font.render(font,'Score: {}'.format(score), 1, black)
     pygame.Surface.blit(gameDisplay, scoreText, (550,550))
 
-    player = Player()
+    player = Player(x,y)
 
     pygame.display.update()
 
@@ -152,8 +159,21 @@ def game_loop():
             if event.type == pygame.QUIT:
                 gameExit=True
             if event.type == pygame.KEYDOWN:
-                if event.key == K_d or event.key == K_LEFT:
-                    snake.moveLeft()
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    x, y = player.moveLeft(x,y)
+                    print(player.location)
+                elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    x, y = player.moveRight(x,y)
+                    print(player.location)
+                elif event.key == pygame.K_w or event.key == pygame.K_UP:
+                    x, y = player.moveUp(x,y)
+                    print(player.location)
+                elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    x, y = player.moveDown(x,y)
+                    print(player.location)
+
+        Clock = pygame.time.Clock()
+        Clock.tick(10)
 
 
 # Main Function Calls
