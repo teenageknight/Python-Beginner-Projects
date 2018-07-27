@@ -96,27 +96,26 @@ def drawMenu():
                     quit()
 
 
-class Player(x,y):
+class Player:
     """docstring for Making the Player."""
     def __init__(self,x,y):
         self.x = x
         self.y = y
-    location = (x,y)
-    speed = 1
+    speed = 5
 
     # Movement Functions
-    def moveLeft(self):
-        self.x = self.x - self.seed
-        return self.x, self.y
-    def moveRight(self):
+    def moveLeft(self,x):
+        self.x = self.x - self.speed
+        return self.x
+    def moveRight(self,x):
         self.x = self.x + self.speed
-        return self.x, self.y
-    def moveDown(self):
+        return self.x
+    def moveDown(self,y):
         self.y = self.y - self.speed
-        return self.x, self.y
-    def moveUp(self):
+        return self.y
+    def moveUp(self,y):
         self.y = self.y + self.speed
-        return self.x, self.y
+        return self.y
 
 
 # def player_snake(xPos,yPos,numDotsEaten):
@@ -139,6 +138,7 @@ def game_loop():
     gameExit = False
     x = 400
     y = 300
+
     # Run Menu
     drawMenu()
 
@@ -150,30 +150,37 @@ def game_loop():
     scoreText = pygame.font.Font.render(font,'Score: {}'.format(score), 1, black)
     pygame.Surface.blit(gameDisplay, scoreText, (550,550))
 
+    playerRect = pygame.rect.Rect(x,y,15,15)
+
     player = Player(x,y)
 
     pygame.display.update()
 
     while not gameExit:
+        playerLocation = (x,y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    x, y = player.moveLeft(x,y)
-                    print(player.location)
+                    x = player.moveLeft(x)
+                    print(playerLocation)
                 elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    x, y = player.moveRight(x,y)
-                    print(player.location)
+                    x = player.moveRight(x)
+                    print(playerLocation)
                 elif event.key == pygame.K_w or event.key == pygame.K_UP:
-                    x, y = player.moveUp(x,y)
-                    print(player.location)
+                    y = player.moveUp(y)
+                    print(playerLocation)
                 elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    x, y = player.moveDown(x,y)
-                    print(player.location)
+                    y = player.moveDown(y)
+                    print(playerLocation)
+
+        playerRect = playerRect.move_ip(x,y)
+        pygame.draw.rect(gameDisplay, blue, playerRect)
+        pygame.display.update()
 
         Clock = pygame.time.Clock()
-        Clock.tick(10)
+        Clock.tick(3)
 
 
 # Main Function Calls
