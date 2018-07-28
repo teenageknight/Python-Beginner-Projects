@@ -5,7 +5,7 @@
 #  ----------------------------------------------------------   #
 #                                                               #
 #  Description: A game where the player eats dots to increase   #
-#               in speed and size. Uses pygame.                 #
+#               in speed and size. Uses pygame. very sloppy     #
 #                                                               #
 #         Author: Bryce Jackson (bkajackson99@gmail.com)        #
 #               (https://github.com/teenageknight)              #
@@ -96,27 +96,6 @@ def drawMenu():
                     quit()
 
 
-# class Player:
-#     """docstring for Making the Player."""
-#     def __init__(self,x,y):
-#         self.x = x
-#         self.y = y
-#     speed = 5
-#
-#     # Movement Functions
-#     def moveLeft(self,x):
-#         self.x = self.x - self.speed
-#         return self.x
-#     def moveRight(self,x):
-#         self.x = self.x + self.speed
-#         return self.x
-#     def moveDown(self,y):
-#         self.y = self.y - self.speed
-#         return self.y
-#     def moveUp(self,y):
-#         self.y = self.y + self.speed
-#         return self.y
-
 def game_intro():
     '''
     Can create later using the pygame.font library for plain typing.
@@ -134,36 +113,111 @@ def makeFood():
 
     return food_x, food_y
 
+def drawSnake(lead_x,lead_y,xList,yList,numBlocks):
+    # playerRect = pygame.draw.rect(gameDisplay,blue,[lead_x,lead_y,20,20])
+    if numBlocks != 0:
+        for i in range(len(xList)):
+            pygame.draw.rect(gameDisplay, blue, [xList[i],yList[i],20,20])
+            if i == 0:
+                xList[i] = lead_x
+                yList[i] = lead_y
+            elif i > 0:
+                xList[i] = xList[i-1]
+                yList[i] = yList[i-1]
+    return xList, yList
+
+def addMoreSnake(xList,yList,direction,lead_x,lead_y,iteration):
+    if iteration == 1:
+        if direction == 'left':
+            lead_x += 22
+            xList.append(lead_x)
+            yList.append(lead_y)
+        elif direction == 'right':
+            lead_x -= 22
+            xList.append(lead_x)
+            yList.append(lead_y)
+        elif direction == 'up':
+            lead_y += 22
+            yList.append(lead_y)
+            xList.append(lead_x)
+        elif direction == 'down':
+            lead_y -= 22
+            yList.append(lead_y)
+            xList.append(lead_x)
+    else:
+        if direction == 'left':
+            tempVar = xList[iteration-2] + 22
+            xList.append(tempVar)
+            yList.append(yList[iteration-2])
+        elif direction == 'right':
+            tempVar = xList[iteration-2] - 22
+            xList.append(tempVar)
+            yList.append(yList[iteration-2])
+        elif direction == 'up':
+            tempVar = yList[iteration-2] + 22
+            yList.append(tempVar)
+            xList.append(xList[iteration-2])
+        elif direction == 'down':
+            tempVar = yList[iteration-2] - 22
+            yList.append(tempVar)
+            xList.append(xList[iteration-2])
+
+    return xList, yList
+
 def game_loop():
     # Globals in the def
     gameExit = False
-    x = 400
-    y = 300
+    lead_x = 400
+    lead_y = 300
     score = 0
     make_food = True
-
+    food_x = 0
+    food_y = 0
+    direction = 'Up'
+    foodEaten = 0
+    snake_x = []
+    snake_y = []
     # Run Menu
     drawMenu()
 
     while not gameExit:
-
-        playerLocation = (x,y)
+        playerLocation = (lead_x,lead_y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    x -= 10
-                    print(playerLocation)
-                elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    x += 10
-                    print(playerLocation)
-                elif event.key == pygame.K_w or event.key == pygame.K_UP:
-                    y -= 10
-                    print(playerLocation)
-                elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    y += 10
-                    print(playerLocation)
+            # if event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            #         x -= 10
+            #         print(playerLocation)
+            #     elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            #         x += 10
+            #         print(playerLocation)
+            #     elif event.key == pygame.K_w or event.key == pygame.K_UP:
+            #         y -= 10
+            #         print(playerLocation)
+            #     elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
+            #         y += 10
+            #         print(playerLocation)
+
+        keys = pygame.key.get_pressed()
+    # moves hero with key presses
+        if keys[pygame.K_LEFT] == 1:
+            direction = 'left'
+        if keys[pygame.K_RIGHT] == 1:
+            direction = 'right'
+        if keys[pygame.K_UP] == 1:
+            direction = 'up'
+        if keys[pygame.K_DOWN] == 1:
+            direction = 'down'
+
+        if direction == 'left':
+            lead_x -= 7
+        elif direction == 'right':
+            lead_x += 7
+        elif direction == 'up':
+            lead_y -= 7
+        elif direction == 'down':
+            lead_y += 7
 
         gameDisplay.fill(white)
 
@@ -175,24 +229,29 @@ def game_loop():
 
         if make_food:
             food_x, food_y = makeFood()
-            foodRect = pygame.draw.rect(gameDisplay, red, [food_x,food_y, 10,10])
             make_food = False
             print('Made Food')
 
-        foodRect.draw()
-        playerRect = pygame.draw.rect(gameDisplay,blue,[x,y,15,15])
+        foodRect = pygame.draw.rect(gameDisplay, red, [food_x,food_y, 10,10])
+        playerRect = pygame.draw.rect(gameDisplay,blue,[lead_x,lead_y,20,20])
+        snake_x, snake_y = drawSnake(lead_x,lead_y,snake_x,snake_y,foodEaten)
 
         if not gameBorders.contains(playerRect):
             gameExit = True
         if playerRect.contains(foodRect):
             score += 5
+            foodEaten += 1
+            snake_x,snake_y = addMoreSnake(snake_x,snake_y,direction,lead_x,lead_y, foodEaten)
+            print(snake_x,snake_y)
             print(score)
             print('winner')
             make_food = True
+
+
         pygame.display.update()
 
-        # Clock = pygame.time.Clock()
-        # Clock.tick(3)
+        Clock = pygame.time.Clock()
+        Clock.tick(30)
 
 
 # Main Function Calls
