@@ -113,20 +113,28 @@ def makeFood():
 
     return food_x, food_y
 
-def drawSnake(lead_x,lead_y,xList,yList,numBlocks):
+def drawSnake(lead_x,lead_y,xList,yList,numBlocks,rectList):
     # playerRect = pygame.draw.rect(gameDisplay,blue,[lead_x,lead_y,20,20])
+
     if numBlocks != 0:
-        for i in range(len(xList)):
-            pygame.draw.rect(gameDisplay, blue, [xList[i],yList[i],20,20])
+        for i in range(len(rectList)):
             if i == 0:
                 xList[i] = lead_x
                 yList[i] = lead_y
             elif i > 0:
                 xList[i] = xList[i-1]
                 yList[i] = yList[i-1]
-    return xList, yList
+            temp = rectList[i]
+            temp.move(xList[i],yList[i])
+
+    return xList, yList, rectList
 
 def addMoreSnake(xList,yList,direction,lead_x,lead_y,iteration):
+    rectList = []
+    for i in range(len(xList)):
+        temp = pygame.draw.rect(gameDisplay, blue, [xList[i],yList[i],20,20])
+        rectList.append(temp)
+
     if iteration == 1:
         if direction == 'left':
             lead_x += 22
@@ -162,7 +170,7 @@ def addMoreSnake(xList,yList,direction,lead_x,lead_y,iteration):
             yList.append(tempVar)
             xList.append(xList[iteration-2])
 
-    return xList, yList
+    return xList, yList, rectList
 
 def game_loop():
     # Globals in the def
@@ -177,6 +185,7 @@ def game_loop():
     foodEaten = 0
     snake_x = []
     snake_y = []
+    rectList = []
     # Run Menu
     drawMenu()
 
@@ -185,19 +194,6 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-            #         x -= 10
-            #         print(playerLocation)
-            #     elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-            #         x += 10
-            #         print(playerLocation)
-            #     elif event.key == pygame.K_w or event.key == pygame.K_UP:
-            #         y -= 10
-            #         print(playerLocation)
-            #     elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-            #         y += 10
-            #         print(playerLocation)
 
         keys = pygame.key.get_pressed()
     # moves hero with key presses
@@ -234,14 +230,14 @@ def game_loop():
 
         foodRect = pygame.draw.rect(gameDisplay, red, [food_x,food_y, 10,10])
         playerRect = pygame.draw.rect(gameDisplay,blue,[lead_x,lead_y,20,20])
-        snake_x, snake_y = drawSnake(lead_x,lead_y,snake_x,snake_y,foodEaten)
+        snake_x, snake_y, rectList = drawSnake(lead_x,lead_y,snake_x,snake_y,foodEaten, rectList)
 
         if not gameBorders.contains(playerRect):
             gameExit = True
         if playerRect.contains(foodRect):
             score += 5
             foodEaten += 1
-            snake_x,snake_y = addMoreSnake(snake_x,snake_y,direction,lead_x,lead_y, foodEaten)
+            snake_x,snake_y,rectList = addMoreSnake(snake_x,snake_y,direction,lead_x,lead_y, foodEaten)
             print(snake_x,snake_y)
             print(score)
             print('winner')
