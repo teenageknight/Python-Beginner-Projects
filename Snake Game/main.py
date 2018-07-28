@@ -96,34 +96,26 @@ def drawMenu():
                     quit()
 
 
-class Player:
-    """docstring for Making the Player."""
-    def __init__(self,x,y):
-        self.x = x
-        self.y = y
-    speed = 5
-
-    # Movement Functions
-    def moveLeft(self,x):
-        self.x = self.x - self.speed
-        return self.x
-    def moveRight(self,x):
-        self.x = self.x + self.speed
-        return self.x
-    def moveDown(self,y):
-        self.y = self.y - self.speed
-        return self.y
-    def moveUp(self,y):
-        self.y = self.y + self.speed
-        return self.y
-
-
-# def player_snake(xPos,yPos,numDotsEaten):
-#     x = xPos
-#     y = yPos
+# class Player:
+#     """docstring for Making the Player."""
+#     def __init__(self,x,y):
+#         self.x = x
+#         self.y = y
+#     speed = 5
 #
-#     playerSpeed = 0 # FIXME: Add in speed in relation to number of dots numDotsEaten
-#     pygame.draw.rect(gameDisplay,black, [x,y,10,10])
+#     # Movement Functions
+#     def moveLeft(self,x):
+#         self.x = self.x - self.speed
+#         return self.x
+#     def moveRight(self,x):
+#         self.x = self.x + self.speed
+#         return self.x
+#     def moveDown(self,y):
+#         self.y = self.y - self.speed
+#         return self.y
+#     def moveUp(self,y):
+#         self.y = self.y + self.speed
+#         return self.y
 
 def game_intro():
     '''
@@ -131,56 +123,76 @@ def game_intro():
     '''
     pass
 
+def makeFood():
+    food_x = randint(50,700)
+    while not food_x % 5 == 0:
+        food_x = randint(50,700)
+    food_y = randint(50,500)
+    while not food_y % 5 == 0:
+        food_y = randint(50,500)
+    foodLocation = (food_x,food_y)
+
+    return food_x, food_y
+
 def game_loop():
     # Globals in the def
-    numberOfDots = 0
-    score = 0
     gameExit = False
     x = 400
     y = 300
+    score = 0
+    make_food = True
 
     # Run Menu
     drawMenu()
 
-    gameDisplay.fill(white)
-
-    gameBorders = pygame.draw.rect(gameDisplay, black, [50,50,700,500], 2)
-
-    scoreRect = pygame.draw.rect(gameDisplay, white, [550,550,250,50], 1)
-    scoreText = pygame.font.Font.render(font,'Score: {}'.format(score), 1, black)
-    pygame.Surface.blit(gameDisplay, scoreText, (550,550))
-
-    playerRect = pygame.rect.Rect(x,y,15,15)
-
-    player = Player(x,y)
-
-    pygame.display.update()
-
     while not gameExit:
+
         playerLocation = (x,y)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit=True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    x = player.moveLeft(x)
+                    x -= 10
                     print(playerLocation)
                 elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    x = player.moveRight(x)
+                    x += 10
                     print(playerLocation)
                 elif event.key == pygame.K_w or event.key == pygame.K_UP:
-                    y = player.moveUp(y)
+                    y -= 10
                     print(playerLocation)
                 elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    y = player.moveDown(y)
+                    y += 10
                     print(playerLocation)
 
-        playerRect = playerRect.move_ip(x,y)
-        pygame.draw.rect(gameDisplay, blue, playerRect)
+        gameDisplay.fill(white)
+
+        gameBorders = pygame.draw.rect(gameDisplay, black, [50,50,700,500], 2)
+
+        scoreRect = pygame.draw.rect(gameDisplay, white, [550,550,250,50], 1)
+        scoreText = pygame.font.Font.render(font,'Score: %d' % score, 1, black)
+        pygame.Surface.blit(gameDisplay, scoreText, (550,550))
+
+        if make_food:
+            food_x, food_y = makeFood()
+            foodRect = pygame.draw.rect(gameDisplay, red, [food_x,food_y, 10,10])
+            make_food = False
+            print('Made Food')
+
+        foodRect.draw()
+        playerRect = pygame.draw.rect(gameDisplay,blue,[x,y,15,15])
+
+        if not gameBorders.contains(playerRect):
+            gameExit = True
+        if playerRect.contains(foodRect):
+            score += 5
+            print(score)
+            print('winner')
+            make_food = True
         pygame.display.update()
 
-        Clock = pygame.time.Clock()
-        Clock.tick(3)
+        # Clock = pygame.time.Clock()
+        # Clock.tick(3)
 
 
 # Main Function Calls
