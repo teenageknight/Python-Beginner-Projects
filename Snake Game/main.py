@@ -96,12 +96,6 @@ def drawMenu():
                     quit()
 
 
-def game_intro():
-    '''
-    Can create later using the pygame.font library for plain typing.
-    '''
-    pass
-
 def makeFood():
     food_x = randint(50,700)
     while not food_x % 5 == 0:

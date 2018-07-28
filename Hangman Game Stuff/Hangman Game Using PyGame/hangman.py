@@ -50,10 +50,22 @@ class App:
     def drawMainMenu(self):
         self.playMusic('wiiSports.mp3')
 
+        # Makes Buttons for menu
+        startButton = pygame.draw.rect(self.gameDisplay,blue,[])
+        highscoreButton = pygame.draw.rect(self.gameDisplay,blue,[])
+        quitButton = pygame.draw.rect(self.gameDisplay,blue,[])
 
-        # startButton =
-        # highscoreButton =
-        # quitButton =
+        # Renders text for menu
+        startButtonText = pygame.font.Font.render(font,'Start Hangman', 1, white)
+        highscoreButtonText = pygame.font.Font.render(font,'View Highscores', 1, white)
+        quitButtonText = pygame.font.Font.render(font,'Quit', 1, white)
+
+        # Puts the text on the surface
+        # FIXME: make sure to change so it renders right in the middle
+        pygame.Surface.blit(gameDisplay, startButtonText, (400 - textStart.get_width() // 2, 150 - textStart.get_height() // 2))
+        pygame.Surface.blit(gameDisplay, highscoreButtonText, (400 - textQuit.get_width() // 2, 400 - textQuit.get_height() // 2))
+        pygame.Surface.blit(gameDisplay, quitButtonText, (400 - textQuit.get_width() // 2, 400 - textQuit.get_height() // 2))
+        pygame.display.update()
 
     # Gets the file that holds the words.
     def getWordFile(self):
