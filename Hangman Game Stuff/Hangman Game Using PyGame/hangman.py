@@ -39,14 +39,16 @@ class App:
         if event.type == QUIT:
             self._running = False
 
-    def playMusic():
-        pass
-    def drawMainMenu(self):
-        pygame.mixer.music.load('wiiSports.mp3')
+    # has the music functions
+    # FIXME: Consider changing mp3 to ogg
+    def playMusic(self, file_name):
+        pygame.mixer.music.load(file_name)
         pygame.mixer.music.play(-1)
-        pygame.display.update()
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
+
+    def drawMainMenu(self):
+        self.playMusic('wiiSports.mp3')
 
 
         # startButton =
