@@ -14,6 +14,29 @@ black = (0,0,0)
 green = (0,255,0)
 white = (255,255,255)
 
+class Player:
+    """docstring for Player."""
+    def __init__(self, name):
+        self.name = name
+
+    def findHighscoreNames(self, file_name):
+        nameList = []
+        infile = open(file_name, 'r')
+        linelist = infile.readlines()
+        total_lines = len(linelist)
+        for i in range(total_lines):
+            line_num = i+1
+            if line_num % 2 == 1:
+                continue
+            elif line_num % 2 == 0:
+                nameList.append(linelist[i])
+        print(nameList)
+        return nameList
+
+    def newPlayer(self, name):
+        newPlayer = True
+        nameList = self.findHighscoreNames('highscores.txt')
+        return newPlayer
 class App:
     """docstring for App."""
 
@@ -60,14 +83,21 @@ class App:
 
         self.gameDisplay.fill(white)
         startGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,150,250,50])
+        mainMenuButton = pygame.draw.rect(self.gameDisplay,blue, [500,262.5,250,50])
         quitGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,375,250,50])
-        highscoresTitle = pygame.draw.rect(self.gameDisplay,purple,[125,50,550,50])
+        highscoresTitle = pygame.draw.rect(self.gameDisplay,white,[125,50,550,50])
 
         startGameButtonText = pygame.font.Font.render(self.font,'Play Game', 1, white)
+        mainMenuButtonText = pygame.font.Font.render(self.font,'Main Menu', 1, white)
         quitGameButtonText = pygame.font.Font.render(self.font,'Quit', 1, white)
+        highscoresTitleText = pygame.font.Font.render(self.font,'Highscores', 1, black)
+
 
         pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, mainMenuButtonText, (625 - mainMenuButtonText.get_width() // 2, 287.5 - mainMenuButtonText.get_height() // 2))
         pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, highscoresTitleText, (400 - highscoresTitleText.get_width() // 2, 75 - highscoresTitleText.get_height() // 2))
+
         pygame.display.update()
 
         # These varibles are a list of codinates for the boxes that hold the text
@@ -79,13 +109,13 @@ class App:
         for i in range(len(placeBoxCor)):
             for ix in range(len(placeBoxCor[i])):
                 if lineNum % 2 == 1:
-                    box = pygame.draw.rect(self.gameDisplay,pink,[placeBoxCor[i][0],placeBoxCor[i][1],25,25])
-                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations], 1, black)
+                    box = pygame.draw.rect(self.gameDisplay,white,[placeBoxCor[i][0],placeBoxCor[i][1],25,25])
+                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations].rstrip(), 1, black)
                     pygame.Surface.blit(self.gameDisplay, boxText, (placeBoxCor[i][0],placeBoxCor[i][1]))
                     pygame.display.update()
                 elif lineNum % 2 == 0:
-                    box = pygame.draw.rect(self.gameDisplay,pink,[nameBoxCor[i][0],nameBoxCor[i][1],275,25])
-                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations], 1, black)
+                    box = pygame.draw.rect(self.gameDisplay,white,[nameBoxCor[i][0],nameBoxCor[i][1],275,25])
+                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations].rstrip(), 1, black)
                     pygame.Surface.blit(self.gameDisplay, boxText, (nameBoxCor[i][0],nameBoxCor[i][1]))
                     pygame.display.update()
                 lineNum += 1
@@ -96,10 +126,60 @@ class App:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._running=False
+                if event.type == pygame.MOUSEMOTION:
+                    mouse_position = pygame.mouse.get_pos()
+                    if pygame.Rect.collidepoint(startGameButton, mouse_position):
+                        startGameButton = pygame.draw.rect(self.gameDisplay,red,[500,150,250,50])
+                        pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, mainMenuButtonText, (625 - mainMenuButtonText.get_width() // 2, 287.5 - mainMenuButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoresTitleText, (400 - highscoresTitleText.get_width() // 2, 75 - highscoresTitleText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(mainMenuButton, mouse_position):
+                        mainMenuButton = pygame.draw.rect(self.gameDisplay,red, [500,262.5,250,50])
+                        pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, mainMenuButtonText, (625 - mainMenuButtonText.get_width() // 2, 287.5 - mainMenuButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoresTitleText, (400 - highscoresTitleText.get_width() // 2, 75 - highscoresTitleText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(quitGameButton, mouse_position):
+                        quitGameButton = pygame.draw.rect(self.gameDisplay,red,[500,375,250,50])
+                        pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, mainMenuButtonText, (625 - mainMenuButtonText.get_width() // 2, 287.5 - mainMenuButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoresTitleText, (400 - highscoresTitleText.get_width() // 2, 75 - highscoresTitleText.get_height() // 2))
+                        pygame.display.update()
+                    else:
+                        startGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,150,250,50])
+                        mainMenuButton = pygame.draw.rect(self.gameDisplay,blue, [500,262.5,250,50])
+                        quitGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,375,250,50])
+                        highscoresTitle = pygame.draw.rect(self.gameDisplay,white,[125,50,550,50])
+                        pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, mainMenuButtonText, (625 - mainMenuButtonText.get_width() // 2, 287.5 - mainMenuButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoresTitleText, (400 - highscoresTitleText.get_width() // 2, 75 - highscoresTitleText.get_height() // 2))
+                        pygame.display.update()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    clickPos = pygame.mouse.get_pos()
+                    print(clickPos)
+                    if pygame.Rect.collidepoint(startGameButton, clickPos):
+                        print('Game Started')
+                        user_pick = True
+                    elif pygame.Rect.collidepoint(mainMenuButton, clickPos):
+                        print('going to main menu')
+                        user_pick = True
+                        self.drawMainMenu()
+                    elif pygame.Rect.collidepoint(quitGameButton,clickPos):
+                        print('Quit Game')
+                        user_pick = True
+                        pygame.quit()
+                        quit()
 
 
     def drawMainMenu(self):
         user_pick = False
+
+        self.gameDisplay.fill(black)
 
         # Makes Buttons for menu
         startButton = pygame.draw.rect(self.gameDisplay,green,[200,75,400,100])
@@ -198,7 +278,10 @@ class App:
 """
 This part is for debuging. Make real game function later
 """
-game = App()
-game.on_init()
+# game = App()
+# game.on_init()
+#
+# game.drawMainMenu()
 
-game.drawMainMenu()
+player = Player('Bryce')
+player.newPlayer(player.name)
