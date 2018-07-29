@@ -11,6 +11,7 @@ red = (255,0,0)
 purple = (160,32,240)
 pink = (255,192,203)
 black = (0,0,0)
+green = (0,255,0)
 white = (255,255,255)
 
 class App:
@@ -33,6 +34,9 @@ class App:
         pygame.display.set_caption('Hangman Game')
         pygame.display.update()
 
+        self.font = pygame.font.SysFont('comicsansms', 32)
+        self.fontSmall = pygame.font.SysFont('comicsansms', 11)
+
         self._running = True
 
     def on_event(self, event):
@@ -43,29 +47,127 @@ class App:
     # FIXME: Consider changing mp3 to ogg
     def playMusic(self, file_name):
         pygame.mixer.music.load(file_name)
-        pygame.mixer.music.play(-1)
+        pygame.mixer.music.play(1)
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
+    def viewHighscores(self, file_name):
+        user_pick = False
+
+        infile = open(file_name, 'r')
+        scores = infile.readlines()
+        print(scores)
+
+        self.gameDisplay.fill(white)
+        startGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,150,250,50])
+        quitGameButton = pygame.draw.rect(self.gameDisplay,blue,[500,375,250,50])
+        highscoresTitle = pygame.draw.rect(self.gameDisplay,purple,[125,50,550,50])
+
+        startGameButtonText = pygame.font.Font.render(self.font,'Play Game', 1, white)
+        quitGameButtonText = pygame.font.Font.render(self.font,'Quit', 1, white)
+
+        pygame.Surface.blit(self.gameDisplay, startGameButtonText, (625 - startGameButtonText.get_width() // 2, 175 - startGameButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, quitGameButtonText, (625 - quitGameButtonText.get_width() // 2, 400 - quitGameButtonText.get_height() // 2))
+        pygame.display.update()
+
+        # These varibles are a list of codinates for the boxes that hold the text
+        placeBoxCor = [[25,125],[25,175],[25,225],[25,275],[25,325],[25,375],[25,425],[25,475],[25,525],[25,575]]
+        nameBoxCor = [[75,125],[75,175],[75,225],[75,275],[75,325],[75,375],[75,425],[75,475],[75,525],[75,575]]
+
+        lineNum = 1
+        scoreIterations =0
+        for i in range(len(placeBoxCor)):
+            for ix in range(len(placeBoxCor[i])):
+                if lineNum % 2 == 1:
+                    box = pygame.draw.rect(self.gameDisplay,pink,[placeBoxCor[i][0],placeBoxCor[i][1],25,25])
+                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations], 1, black)
+                    pygame.Surface.blit(self.gameDisplay, boxText, (placeBoxCor[i][0],placeBoxCor[i][1]))
+                    pygame.display.update()
+                elif lineNum % 2 == 0:
+                    box = pygame.draw.rect(self.gameDisplay,pink,[nameBoxCor[i][0],nameBoxCor[i][1],275,25])
+                    boxText = pygame.font.Font.render(self.fontSmall,'%s' % scores[scoreIterations], 1, black)
+                    pygame.Surface.blit(self.gameDisplay, boxText, (nameBoxCor[i][0],nameBoxCor[i][1]))
+                    pygame.display.update()
+                lineNum += 1
+                scoreIterations += 1
+
+
+        while not user_pick:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self._running=False
+
+
     def drawMainMenu(self):
-        self.playMusic('wiiSports.mp3')
+        user_pick = False
 
         # Makes Buttons for menu
-        startButton = pygame.draw.rect(self.gameDisplay,blue,[])
-        highscoreButton = pygame.draw.rect(self.gameDisplay,blue,[])
-        quitButton = pygame.draw.rect(self.gameDisplay,blue,[])
+        startButton = pygame.draw.rect(self.gameDisplay,green,[200,75,400,100])
+        highscoreButton = pygame.draw.rect(self.gameDisplay,green,[200,225,400,100])
+        quitButton = pygame.draw.rect(self.gameDisplay,green,[200,375,400,100])
 
         # Renders text for menu
-        startButtonText = pygame.font.Font.render(font,'Start Hangman', 1, white)
-        highscoreButtonText = pygame.font.Font.render(font,'View Highscores', 1, white)
-        quitButtonText = pygame.font.Font.render(font,'Quit', 1, white)
+        startButtonText = pygame.font.Font.render(self.font,'Start Hangman', 1, white)
+        highscoreButtonText = pygame.font.Font.render(self.font,'View Highscores', 1, white)
+        quitButtonText = pygame.font.Font.render(self.font,'Quit', 1, white)
 
         # Puts the text on the surface
         # FIXME: make sure to change so it renders right in the middle
-        pygame.Surface.blit(gameDisplay, startButtonText, (400 - textStart.get_width() // 2, 150 - textStart.get_height() // 2))
-        pygame.Surface.blit(gameDisplay, highscoreButtonText, (400 - textQuit.get_width() // 2, 400 - textQuit.get_height() // 2))
-        pygame.Surface.blit(gameDisplay, quitButtonText, (400 - textQuit.get_width() // 2, 400 - textQuit.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 125 - startButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 275 - highscoreButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 425 - quitButtonText.get_height() // 2))
         pygame.display.update()
+
+        while not user_pick:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self._running=False
+                # This event makes the button change font when hovered over.
+                if event.type == pygame.MOUSEMOTION:
+                    mouse_position = pygame.mouse.get_pos()
+                    if pygame.Rect.collidepoint(startButton, mouse_position):
+                        startButton = pygame.draw.rect(self.gameDisplay,blue,[200,75,400,100])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 125 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 275 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 425 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(highscoreButton, mouse_position):
+                        highscoreButton = pygame.draw.rect(self.gameDisplay,blue,[200,225,400,100])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 125 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 275 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 425 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(quitButton, mouse_position):
+                        quitButton = pygame.draw.rect(self.gameDisplay,blue,[200,375,400,100])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 125 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 275 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 425 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    else:
+                        startButton = pygame.draw.rect(self.gameDisplay,green,[200,75,400,100])
+                        highscoreButton = pygame.draw.rect(self.gameDisplay,green,[200,225,400,100])
+                        quitButton = pygame.draw.rect(self.gameDisplay,green,[200,375,400,100])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 125 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 275 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 425 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+
+                # This event is the button logic
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    clickPos = pygame.mouse.get_pos()
+                    print(clickPos)
+                    if pygame.Rect.collidepoint(startButton, clickPos):
+                        print('Game Started')
+                        user_pick = True
+                    elif pygame.Rect.collidepoint(highscoreButton, clickPos):
+                        print('Viewing Highscores')
+                        user_pick = True
+                        self.viewHighscores('highscores.txt')
+                    elif pygame.Rect.collidepoint(quitButton,clickPos):
+                        print('Quit Game')
+                        user_pick = True
+                        pygame.quit()
+                        quit()
 
     # Gets the file that holds the words.
     def getWordFile(self):
