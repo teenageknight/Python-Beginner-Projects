@@ -14,29 +14,6 @@ black = (0,0,0)
 green = (0,255,0)
 white = (255,255,255)
 
-class Player:
-    """docstring for Player."""
-    def __init__(self, name):
-        self.name = name
-
-    def findHighscoreNames(self, file_name):
-        nameList = []
-        infile = open(file_name, 'r')
-        linelist = infile.readlines()
-        total_lines = len(linelist)
-        for i in range(total_lines):
-            line_num = i+1
-            if line_num % 2 == 1:
-                continue
-            elif line_num % 2 == 0:
-                nameList.append(linelist[i])
-        print(nameList)
-        return nameList
-
-    def newPlayer(self, name):
-        newPlayer = True
-        nameList = self.findHighscoreNames('highscores.txt')
-        return newPlayer
 class App:
     """docstring for App."""
 
@@ -49,6 +26,11 @@ class App:
 
     # This function is run on intialization. It initalizes the following
     # Display, pygame, and capting
+    def createSurface(self):
+        self.hangmanSurface = pygame.Surface((280,340))
+        self.lettersGuessedSurface = pygame.Surface((280,200))
+        self.infoSurface = pygame.Surface((140,220))
+
     def on_init(self):
         pygame.init()
         pygame.font.init()
@@ -56,6 +38,8 @@ class App:
         self.gameDisplay = pygame.display.set_mode((self.windowWidth,self.windowHeight))
         pygame.display.set_caption('Hangman Game')
         pygame.display.update()
+
+        self.createSurface()
 
         self.font = pygame.font.SysFont('comicsansms', 32)
         self.fontSmall = pygame.font.SysFont('comicsansms', 11)
@@ -164,6 +148,7 @@ class App:
                     print(clickPos)
                     if pygame.Rect.collidepoint(startGameButton, clickPos):
                         print('Game Started')
+                        self.playGame()
                         user_pick = True
                     elif pygame.Rect.collidepoint(mainMenuButton, clickPos):
                         print('going to main menu')
@@ -238,6 +223,7 @@ class App:
                     print(clickPos)
                     if pygame.Rect.collidepoint(startButton, clickPos):
                         print('Game Started')
+                        self.playGame()
                         user_pick = True
                     elif pygame.Rect.collidepoint(highscoreButton, clickPos):
                         print('Viewing Highscores')
@@ -263,7 +249,7 @@ class App:
                     with open(file_name, "r"): found_file= True
                 except IOError:
                     file_name = input('\n{0} was not found!\n\nPlease try again, or specify a different file (include the full file path if the file is in a different directory than the Hangman program): '.format(file_name))
-                    return file_name
+        return file_name
 
     def chooseWord(self, file_name):
         infile = open(file_name, 'r')
@@ -275,13 +261,108 @@ class App:
         word_len = len(chosen_word)
         return chosen_word, word_len
 
+    def drawStickMan(self, strike):
+        if strike == 1:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+        elif strike == 2:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+
+        elif strike == 3:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+
+        elif strike == 4:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+
+        elif strike == 5:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,220),(20,280),2)
+
+        elif strike == 6:
+            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+
+            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,220),(20,280),2)
+
+            pygame.draw.line(self.hangmanSurface,white,(80,220),(140,280),2)
+
+    def updateInfo(self):
+        pygame.draw.rect(self.infoSurface,blue,[])
+
+    def updateLetterGuessed(self):
+        pass
+
+    def playGame(self):
+        file_name = self.getWordFile()
+        chosen_word, word_len = self.chooseWord(file_name)
+
+        strikes = 0
+
+        user_pick = False
+        while not user_pick:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self._running=False
+
+            self.gameDisplay.fill(white)
+            self.drawStickMan(6)
+            pygame.Surface.blit(self.gameDisplay,self.hangmanSurface,(20,20))
+            pygame.Surface.blit(self.gameDisplay,self.infoSurface,(320,20))
+            pygame.Surface.blit(self.gameDisplay,self.lettersGuessedSurface,(480,20))
+
+
+            pygame.display.update()
+
+
+    def mainLoop(arg):
+        pass
+
 """
 This part is for debuging. Make real game function later
 """
-# game = App()
-# game.on_init()
-#
-# game.drawMainMenu()
+game = App()
+game.on_init()
 
-player = Player('Bryce')
-player.newPlayer(player.name)
+game.drawMainMenu()
