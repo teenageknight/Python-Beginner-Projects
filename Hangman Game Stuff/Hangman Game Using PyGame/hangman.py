@@ -352,9 +352,26 @@ class App:
         pygame.Surface.blit(self.infoSurface, strikeText, (70 - strikeText.get_width() // 2, 187.5 - strikeText.get_height() // 2))
 
     def updateLetterGuessed(self,guesses):
-        pass
+        self.lettersGuessedSurface.fill(white)
+
+        lettersGuessedTitle = pygame.draw.rect(self.lettersGuessedSurface,red,[80,20,120,20])
+        lettersGuessedTitleText = pygame.font.Font.render(self.fontSmall,'Letters Guessed', 1, white)
+
+        pygame.Surface.blit(self.lettersGuessedSurface, lettersGuessedTitleText, (140 - lettersGuessedTitleText.get_width() // 2, 30 - lettersGuessedTitleText.get_height() // 2))
+
+        lettersGuessedBox = pygame.draw.rect(self.lettersGuessedSurface,red,[20,60,240,120])
+        if len(guesses) == 0:
+            lettersGuessed = pygame.font.Font.render(self.fontSmall,'No Letters Guessed', 1, white)
+            pygame.Surface.blit(self.lettersGuessedSurface, lettersGuessed, (140 - lettersGuessed.get_width() // 2, 120 - lettersGuessed.get_height() // 2))
+        elif len(guesses) > 0:
+            lettersGuessed = pygame.font.Font.render(self.fontSmall,'{0}'.format(guesses), 1, white)
+            pygame.Surface.blit(self.lettersGuessedSurface, lettersGuessed, (140 - lettersGuessed.get_width() // 2, 120 - lettersGuessed.get_height() // 2))
+
+
+
 
     def playGame(self):
+        # https://stackoverflow.com/questions/46390231/how-to-create-a-text-input-box-with-pygame
         file_name = self.getWordFile()
         chosen_word, word_len = self.chooseWord(file_name)
 
