@@ -29,7 +29,7 @@ class App:
     def createSurface(self):
         self.hangmanSurface = pygame.Surface((280,340))
         self.lettersGuessedSurface = pygame.Surface((280,200))
-        self.infoSurface = pygame.Surface((140,220))
+        self.infoSurface = pygame.Surface((140,240))
 
     def on_init(self):
         pygame.init()
@@ -262,76 +262,96 @@ class App:
         return chosen_word, word_len
 
     def drawStickMan(self, strike):
+        self.hangmanSurface.fill(white)
         if strike == 1:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
         elif strike == 2:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
-            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+            pygame.draw.circle(self.hangmanSurface,black,[80,100],20,2)
 
         elif strike == 3:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
-            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+            pygame.draw.circle(self.hangmanSurface,black,[80,100],20,2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,120),(80,220),2)
 
         elif strike == 4:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
-            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+            pygame.draw.circle(self.hangmanSurface,black,[80,100],20,2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,120),(80,220),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+            pygame.draw.line(self.hangmanSurface,black,(20,160),(140,160),2)
 
         elif strike == 5:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
-            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+            pygame.draw.circle(self.hangmanSurface,black,[80,100],20,2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,120),(80,220),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+            pygame.draw.line(self.hangmanSurface,black,(20,160),(140,160),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,220),(20,280),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,220),(20,280),2)
 
         elif strike == 6:
-            pygame.draw.line(self.hangmanSurface, white, (120,320),(280,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (200,40),(200,320),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(200,40),2)
-            pygame.draw.line(self.hangmanSurface, white, (80,40),(80,80),2)
+            pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (200,40),(200,320),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(200,40),2)
+            pygame.draw.line(self.hangmanSurface, black, (80,40),(80,80),2)
 
-            pygame.draw.circle(self.hangmanSurface,white,[80,100],20,2)
+            pygame.draw.circle(self.hangmanSurface,black,[80,100],20,2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,120),(80,220),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,120),(80,220),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(20,160),(140,160),2)
+            pygame.draw.line(self.hangmanSurface,black,(20,160),(140,160),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,220),(20,280),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,220),(20,280),2)
 
-            pygame.draw.line(self.hangmanSurface,white,(80,220),(140,280),2)
+            pygame.draw.line(self.hangmanSurface,black,(80,220),(140,280),2)
 
-    def updateInfo(self):
-        pygame.draw.rect(self.infoSurface,blue,[])
+    def updateInfo(self,score,strike):
+        self.infoSurface.fill(white)
 
-    def updateLetterGuessed(self):
+        scoreCard = pygame.draw.rect(self.infoSurface,blue,[20,20,100,90])
+        strikeCard = pygame.draw.rect(self.infoSurface,blue,[20,130,100,90])
+
+        scoreTitleBox = pygame.draw.rect(self.infoSurface,red,[25,25,90,20])
+        scoreTitleText = pygame.font.Font.render(self.fontSmall,'Score', 1, white)
+        scoreBox = pygame.draw.rect(self.infoSurface,red,[25,50,90,55])
+        scoreText = pygame.font.Font.render(self.font,'{0}'.format(score), 1, white)
+
+        pygame.Surface.blit(self.infoSurface, scoreTitleText, (70 - scoreTitleText.get_width() // 2, 35 - scoreTitleText.get_height() // 2))
+        pygame.Surface.blit(self.infoSurface, scoreText, (70 - scoreText.get_width() // 2, 75 - scoreText.get_height() // 2))
+
+        strikeTitle = pygame.draw.rect(self.infoSurface,red,[25,135,90,20])
+        strikeTitle = pygame.font.Font.render(self.fontSmall,'Strikes', 1, white)
+        strikeBox = pygame.draw.rect(self.infoSurface,red,[25,160,90,55])
+        strikeText = pygame.font.Font.render(self.font,'{0}'.format(strike), 1, white)
+
+        pygame.Surface.blit(self.infoSurface, strikeTitle, (70 - strikeTitle.get_width() // 2, 145 - strikeTitle.get_height() // 2))
+        pygame.Surface.blit(self.infoSurface, strikeText, (70 - strikeText.get_width() // 2, 187.5 - strikeText.get_height() // 2))
+
+    def updateLetterGuessed(self,guesses):
         pass
 
     def playGame(self):
@@ -339,6 +359,7 @@ class App:
         chosen_word, word_len = self.chooseWord(file_name)
 
         strikes = 0
+        guesses = []
 
         user_pick = False
         while not user_pick:
@@ -348,6 +369,8 @@ class App:
 
             self.gameDisplay.fill(white)
             self.drawStickMan(6)
+            self.updateInfo(10,strikes)
+            self.updateLetterGuessed(guesses)
             pygame.Surface.blit(self.gameDisplay,self.hangmanSurface,(20,20))
             pygame.Surface.blit(self.gameDisplay,self.infoSurface,(320,20))
             pygame.Surface.blit(self.gameDisplay,self.lettersGuessedSurface,(480,20))
