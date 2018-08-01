@@ -1,6 +1,6 @@
 import pygame
 from random import randint
-
+import os
 
 
 #Defines the colors used
@@ -13,53 +13,7 @@ pink = (255,192,203)
 black = (0,0,0)
 green = (0,255,0)
 white = (255,255,255)
-COLOR_INACTIVE = pygame.Color('lightskyblue3')
-COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
-pygame.init()
-FONT = pygame.font.Font(None, 32)
-
-class InputBox:
-
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = pygame.Rect(x, y, w, h)
-        self.color = COLOR_INACTIVE
-        self.text = text
-        self.txt_surface = FONT.render(text, True, self.color)
-        self.active = False
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # If the user clicked on the input_box rect.
-            if self.rect.collidepoint(event.pos):
-                # Toggle the active variable.
-                self.active = not self.active
-            else:
-                self.active = False
-            # Change the current color of the input box.
-            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
-        if event.type == pygame.KEYDOWN:
-            if self.active:
-                if event.key == pygame.K_RETURN:
-                    print(self.text)
-                    self.text = ''
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
-                else:
-                    self.text += event.unicode
-                # Re-render the text.
-                self.txt_surface = FONT.render(self.text, True, self.color)
-
-    def update(self):
-        # Resize the box if the text is too long.
-        width = max(200, self.txt_surface.get_width()+10)
-        self.rect.w = width
-
-    def draw(self, screen):
-        # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-        # Blit the rect.
-        pygame.draw.rect(screen, self.color, self.rect, 2)
 
 class App:
     """docstring for App."""
@@ -77,6 +31,7 @@ class App:
         self.hangmanSurface = pygame.Surface((280,340))
         self.lettersGuessedSurface = pygame.Surface((280,200))
         self.infoSurface = pygame.Surface((140,240))
+        self.wordsSurface = pygame.Surface((720,180))
 
     def on_init(self):
         pygame.init()
@@ -89,21 +44,15 @@ class App:
         self.createSurface()
 
         self.font = pygame.font.SysFont('comicsansms', 32)
-        self.fontSmall = pygame.font.SysFont('comicsansms', 11)
+        self.fontSmall = pygame.font.SysFont('comicsansms', 14)
+        self.fontMedium = pygame.font.SysFont('comicsansms', 22)
+
 
         self._running = True
 
     def on_event(self, event):
         if event.type == QUIT:
             self._running = False
-
-    # has the music functions
-    # FIXME: Consider changing mp3 to ogg
-    def playMusic(self, file_name):
-        pygame.mixer.music.load(file_name)
-        pygame.mixer.music.play(1)
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
 
     def viewHighscores(self, file_name):
         user_pick = False
@@ -207,7 +156,6 @@ class App:
                         pygame.quit()
                         quit()
 
-
     def drawMainMenu(self):
         user_pick = False
 
@@ -309,6 +257,7 @@ class App:
         return chosen_word, word_len
 
     def drawStickMan(self, strike):
+        game_over = False
         self.hangmanSurface.fill(white)
         if strike == 1:
             pygame.draw.line(self.hangmanSurface, black, (120,320),(280,320),2)
@@ -375,6 +324,8 @@ class App:
             pygame.draw.line(self.hangmanSurface,black,(80,220),(20,280),2)
 
             pygame.draw.line(self.hangmanSurface,black,(80,220),(140,280),2)
+            game_over = True
+        return game_over
 
     def updateInfo(self,score,strike):
         self.infoSurface.fill(white)
@@ -414,48 +365,262 @@ class App:
             lettersGuessed = pygame.font.Font.render(self.fontSmall,'{0}'.format(guesses), 1, white)
             pygame.Surface.blit(self.lettersGuessedSurface, lettersGuessed, (140 - lettersGuessed.get_width() // 2, 120 - lettersGuessed.get_height() // 2))
 
+    def updateLetters(self,chosen_word,word_len, letters_list,blanks_list,user_pick,strikes):
+        startPos = 10
+        game_over = False
+        self.wordsSurface.fill(white)
+        if user_pick in letters_list:
+            for i in range(len(letters_list)):
+                if letters_list[i] == user_pick:
+                    blanks_list[i] = user_pick
+            for i in range(len(letters_list)):
+                # if its a blank draw a blank
+                if blanks_list[i] == '_':
+                    pygame.draw.line(self.wordsSurface,black,(startPos,90),(startPos+20,90),2)
+                    startPos += 30
+                else:
+                    pygame.draw.rect(self.wordsSurface,white,[startPos,60,20,30])
+                    letter = pygame.font.Font.render(self.fontSmall,'{0}'.format(blanks_list[i]), 1, black)
+                    pygame.Surface.blit(self.wordsSurface, letter, ((startPos+10) - letter.get_width() // 2, 75 - letter.get_height() // 2))
+                    startPos += 30
+        else:
+            strikes = strikes + 1
+            for i in range(len(letters_list)):
+                # if its a blank draw a blank
+                if blanks_list[i] == '_':
+                    pygame.draw.line(self.wordsSurface,black,(startPos,90),(startPos+20,90),2)
+                    startPos += 30
+                else:
+                    pygame.draw.rect(self.wordsSurface,white,[startPos,60,20,30])
+                    letter = pygame.font.Font.render(self.fontSmall,'{0}'.format(blanks_list[i]), 1, black)
+                    pygame.Surface.blit(self.wordsSurface, letter, ((startPos+10) - letter.get_width() // 2, 75 - letter.get_height() // 2))
+                    startPos += 30
 
+        if '_' not in blanks_list:
+            print('No Blanks')
+            game_over = True
+        return strikes, game_over, blanks_list
 
+    def checkHighscore(self,score):
+        print('Checking Highscore')
+        highscore = False
+        infile = open('highscores.txt', 'r')
+        info = infile.readlines()
+        print(info)
+        scores = []
+        for i in range(len(info)):
+            if i % 2 == 0:
+                temp = info[i].rstrip()
+                print(temp)
+                temp = int(temp)
+                print(temp)
+                scores.append(temp)
 
-    def playGame(self):
-        file_name = self.getWordFile()
-        chosen_word, word_len = self.chooseWord(file_name)
+        print(scores)
+        for i in range(len(scores)):
+            if scores[i] < score:
+                highscore = True
+                print('highscore')
+        return highscore
 
-        strikes = 6
-        guesses = []
+    def addHighscore(self,score):
+        print('add new highscore')
+        name = str(input('Enter your Name:\n'))
+        infile = open('highscores.txt', 'r')
+        info = infile.readlines()
+        print(info)
+        scores = []
+        names = []
+        iterationScore = 0
+        iterationName = 0
+        for i in range(len(info)):
+            if i % 2 == 0:
+                temp = info[i].rstrip()
+                temp = int(temp)
+                scores.append(temp)
+            elif i % 2 == 1:
+                temp = info[i].rstrip()
+                names.append(temp)
+        infile.close()
 
-        input_box = InputBox(600,300,10,32)
-        input_boxes = [input_box]
+        os.remove('highscores.txt')
+        print('File Removed')
+
+        print('New File Created')
+        newfile = open('highscores.txt', 'w+')
+        for i in range(len(scores)):
+            if scores[i] < score:
+                scores[i] = score
+                names[i] = name
+                break
+            else:
+                pass
+        print('Printing Scores and Names')
+        print(scores)
+        print(names)
+
+        for i in range(len(scores)):
+            scores[i] = str(scores[i]) + '\n'
+        for i in range(len(names)):
+            names[i] = str(names[i]) + '\n'
+
+        print(scores)
+        print('Iterating')
+        for i in range(len(info)):
+            if i % 2 == 0:
+                print(scores[iterationScore])
+                newfile.write(scores[iterationScore])
+                iterationScore += 1
+            elif i % 2 == 1:
+                newfile.write(names[iterationName])
+                iterationName += 1
+        newfile.close()
+    def gameOver(self,word,score):
+        self.gameDisplay.fill(white)
+        gameOverTitleRect = pygame.draw.rect(self.gameDisplay,red,[225,25,350,75])
+        gameOverTitleText = pygame.font.Font.render(self.font,'GAME OVER', 1, white)
+
+        wordText = pygame.font.Font.render(self.fontMedium,'Your word was:', 1, black)
+        wordText2 = pygame.font.Font.render(self.fontMedium,'{0}'.format(word), 1, black)
+
+        pygame.Surface.blit(self.gameDisplay, gameOverTitleText, (400 - gameOverTitleText.get_width() // 2, 67 - gameOverTitleText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, wordText, (175 - wordText.get_width() // 2, 150 - wordText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, wordText2, (550 - wordText2.get_width() // 2, 150 - wordText2.get_height() // 2))
+
+        # Makes Buttons for menu
+        startButton = pygame.draw.rect(self.gameDisplay,green,[250,225,300,75])
+        highscoreButton = pygame.draw.rect(self.gameDisplay,green,[250,325,300,75])
+        quitButton = pygame.draw.rect(self.gameDisplay,green,[250,425,300,75])
+
+        # Renders text for menu
+        startButtonText = pygame.font.Font.render(self.font,'Start Hangman', 1, white)
+        highscoreButtonText = pygame.font.Font.render(self.font,'View Highscores', 1, white)
+        quitButtonText = pygame.font.Font.render(self.font,'Quit', 1, white)
+
+        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 267 - startButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 367 - highscoreButtonText.get_height() // 2))
+        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 467 - quitButtonText.get_height() // 2))
+
+        pygame.display.update()
         user_pick = False
+
         while not user_pick:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self._running=False
-                for box in input_boxes:
-                    box.handle_event(event)
-                for box in input_boxes:
-                    box.update()
-                self.gameDisplay.fill((white))
-                for box in input_boxes:
-                    box.draw(self.gameDisplay)
+                    pygame.quit()
+                if event.type == pygame.MOUSEMOTION:
+                    mouse_position = pygame.mouse.get_pos()
+                    if pygame.Rect.collidepoint(startButton, mouse_position):
+                        startButton = pygame.draw.rect(self.gameDisplay,blue,[250,225,300,75])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 267 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 367 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 467 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(highscoreButton, mouse_position):
+                        highscoreButton = pygame.draw.rect(self.gameDisplay,blue,[250,325,300,75])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 267 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 367 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 467 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    elif pygame.Rect.collidepoint(quitButton, mouse_position):
+                        quitButton = pygame.draw.rect(self.gameDisplay,blue,[250,425,300,75])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 267 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 367 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 467 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
+                    else:
+                        startButton = pygame.draw.rect(self.gameDisplay,green,[250,225,300,75])
+                        highscoreButton = pygame.draw.rect(self.gameDisplay,green,[250,325,300,75])
+                        quitButton = pygame.draw.rect(self.gameDisplay,green,[250,425,300,75])
+                        pygame.Surface.blit(self.gameDisplay, startButtonText, (400 - startButtonText.get_width() // 2, 267 - startButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, highscoreButtonText, (400 - highscoreButtonText.get_width() // 2, 367 - highscoreButtonText.get_height() // 2))
+                        pygame.Surface.blit(self.gameDisplay, quitButtonText, (400 - quitButtonText.get_width() // 2, 467 - quitButtonText.get_height() // 2))
+                        pygame.display.update()
 
-            self.drawStickMan(strikes)
-            self.updateInfo(10,strikes)
+                # This event is the button logic
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    clickPos = pygame.mouse.get_pos()
+                    print(clickPos)
+                    if pygame.Rect.collidepoint(startButton, clickPos):
+                        print('Game Started')
+                        self.playGame()
+                        user_pick = True
+                    elif pygame.Rect.collidepoint(highscoreButton, clickPos):
+                        print('Viewing Highscores')
+                        user_pick = True
+                        self.viewHighscores('highscores.txt')
+                    elif pygame.Rect.collidepoint(quitButton,clickPos):
+                        print('Quit Game')
+                        user_pick = True
+                        pygame.quit()
+                        quit()
+
+    def playGame(self,score = 0):
+        file_name = self.getWordFile()
+        chosen_word, word_len = self.chooseWord(file_name)
+
+        letters_list = list(chosen_word)
+        blanks_list = []
+        for i in range(len(letters_list)):
+            blanks_list.append('_')
+
+        user_pick = False
+        strikes = 0
+        guesses = []
+        game_over = False
+
+        while not user_pick:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+
+            self.gameDisplay.fill(white)
+            user_guess = str(input('Enter A Letter\n'))
+            guesses.append(user_guess)
+            strikes, game_over, blanks_list = self.updateLetters(chosen_word,word_len,letters_list,blanks_list,user_guess,strikes)
+            if game_over:
+                if strikes == 6:
+                    print('Game Over')
+                    highscore = self.checkHighscore(score)
+                    if highscore:
+                        self.addHighscore(score)
+                        self.viewHighscores('highscores.txt')
+                    else:
+                        self.gameOver(chosen_word,score)
+                else:
+                    score += 50
+                    self.playGame(score)
+            game_over = self.drawStickMan(strikes)
+            if game_over:
+                if strikes == 6:
+                    print('Game Over')
+                    highscore = self.checkHighscore(score)
+                    if highscore:
+                        self.addHighscore(score)
+                        self.viewHighscores('highscores.txt')
+                    else:
+                        self.gameOver(chosen_word,score)
+                else:
+                    score += 50
+                    self.playGame(score)
+
+            self.updateInfo(score,strikes)
             self.updateLetterGuessed(guesses)
+            pygame.Surface.blit(self.gameDisplay,self.wordsSurface, (40,400))
             pygame.Surface.blit(self.gameDisplay,self.hangmanSurface,(20,20))
             pygame.Surface.blit(self.gameDisplay,self.infoSurface,(320,20))
             pygame.Surface.blit(self.gameDisplay,self.lettersGuessedSurface,(480,20))
-
             pygame.display.update()
 
 
-    def mainLoop(arg):
-        pass
+
+    def mainLoop(self):
+        while self._running:
+            self.on_init()
+            self.drawMainMenu()
 
 """
 This part is for debuging. Make real game function later
 """
 game = App()
-game.on_init()
-
-game.drawMainMenu()
+game.mainLoop()
