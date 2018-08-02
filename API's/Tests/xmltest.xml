@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<exec_api method="marketstat_xml" version="2.0">
+	<marketstat>
+		<type id="584">
+			<buy>
+				<volume>7409</volume>
+				<avg>156626.35</avg>
+				<stddev>62894.32</stddev>
+				<median>209011.60</median>
+				<percentile>240002.84</percentile>
+				<max>240002.84</max>
+				<min>48000.00</min>
+			</buy>
+			<sell>
+				<volume>9184</volume>
+				<avg>395825.77</avg>
+				<stddev>215893.16</stddev>
+				<median>366991.43</median>
+				<percentile>205215.71</percentile>
+				<max>1500305.45</max>
+				<min>139999.99</min>
+			</sell>
+		</type>
+	</marketstat>
+</exec_api>
