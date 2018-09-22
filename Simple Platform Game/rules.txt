@@ -1,0 +1,4 @@
+Hangman Game
+
+Controls
+  FIXME add controls

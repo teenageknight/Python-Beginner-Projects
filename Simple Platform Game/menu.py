@@ -7,28 +7,32 @@ from win32api import GetSystemMetrics
 class Menu:
     """Has the information to create a menu at the start of the game"""
 
+    def __init__(self, done):
+        self.done = done
+
     # FIXME: Define Logic of Functions
     def playGame(self):
-        pass
+        self.window.destroy()
 
     def readRules(self):
         pass
 
     def endGame(self):
-        pass
+        self.done = True
+        self.window.destroy()
 
     def setUpMenu(self):
         # Collects users hight and width screen dimensions
-        userScreenWidth = GetSystemMetrics(0)
-        userScreenHeight = GetSystemMetrics(1)
+        self.userScreenWidth = GetSystemMetrics(0)
+        self.userScreenHeight = GetSystemMetrics(1)
 
         # Sets up window information using users screen size
-        window = Tk()
-        window.title("Jumpman Game | Menu")
-        window.geometry("{0}x{1}+{2}+{3}".format(int(userScreenWidth/4),int(userScreenHeight/4),int((userScreenWidth/2)-(userScreenWidth/8)),int((userScreenHeight/2)-(userScreenHeight/8))))
+        self.window = Tk()
+        self.window.title("Jumpman Game | Menu")
+        self.window.geometry("{0}x{1}+{2}+{3}".format(int(self.userScreenWidth/4),int(self.userScreenHeight/4),int((self.userScreenWidth/2)-(self.userScreenWidth/8)),int((self.userScreenHeight/2)-(self.userScreenHeight/8))))
 
         # Set up frames for information
-        mainframe = ttk.Frame(window, padding= "3 3 12 12")
+        mainframe = ttk.Frame(self.window, padding= "3 3 12 12")
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         mainframe.columnconfigure(0, weight=1)
         mainframe.rowconfigure(0, weight=1)
@@ -45,7 +49,4 @@ class Menu:
 
         for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 
-        window.mainloop()
-
-game = Menu()
-game.setUpMenu()
+        self.window.mainloop()
