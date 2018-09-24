@@ -23,6 +23,9 @@ class Player(object):
         super(Player, self).__init__()
         self.arg = arg
 
+    # def drawPlayer(x,y):
+    #     pass
+
 class Food(object):
     """docstring for Food."""
     def __init__(self, arg):
@@ -32,7 +35,7 @@ class Food(object):
 # Definitions
 def redrawScreen():
     pygame.draw.rect(screen, white, [25,50,550,625])
-    
+
     pygame.display.update()
 
 # Mainloop
