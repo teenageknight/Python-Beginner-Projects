@@ -1,5 +1,11 @@
 # FIXME: add comment intro
 
+# Imports
+import menus
+
+# Globals
+menu = Menu()
+
 # classes
 class Player(object):
     """docstring for Player."""
@@ -12,28 +18,21 @@ class Game(object):
     # def __init__(self, arg):
     #     self.arg = arg
     def on_init():
+        menu.intro()
         player = Player()
+        player.selectPlayerType()
 
 # Defenitions
-def newGame(arg):
+def newGame():
     game = Game()
     game.on_init()
+
 
 def main():
     # introduction
     # FIXME: Move to a new function
-    print("""
-    ************************************************
-    *                    Menu                      *
-    ************************************************
-    *                                              *
-    *   1. New Game                                *
-    *   2. Read Rules                              *
-    *   3. Contact the Creaters                    *
-    *                                              *
-    ************************************************
-    """)
 
+    menu.mainMenu()
     decision = input('What is your decision?\n')
 
     if decision == '1':
