@@ -475,6 +475,7 @@ class App:
                 newfile.write(names[iterationName])
                 iterationName += 1
         newfile.close()
+        
     def gameOver(self,word,score):
         self.gameDisplay.fill(white)
         gameOverTitleRect = pygame.draw.rect(self.gameDisplay,red,[225,25,350,75])
