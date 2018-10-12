@@ -6,5 +6,3 @@ Parker
 500
 Sydney
 500
-Ryan
-1000000

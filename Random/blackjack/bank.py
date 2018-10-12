@@ -77,7 +77,42 @@ class User(object):
         newfile.close()
 
     def withdrawal(self, file_name):
-        pass
+        infile = open(file_name, 'r')
+        info = infile.readlines()
+        # Iterates over and gathers information before it is deleted
+        names = []
+        money = []
+        for i in range(len(info)):
+            if i % 2 == 0:
+                names.append(info[i])
+            elif i % 2 == 1:
+                money.append(info[i])
+        infile.close()
+        os.remove(file_name)
+
+        # Gets a name of the person that is being withdrawn.
+        information = [names,money]
+        correctName = False
+        while not correctName:
+            person = input("Who is the person withdrawing money?\n")+"\n"
+            if person in information[0]:
+                personIndex = information[0].index(person)
+                print("The amount of money that {0} has is ${1}.".format(information[0][personIndex].rstrip(), information[1][personIndex].rstrip()))
+                quantityWithdrawn = int(input("How much do you want to withdrawal?\n"))
+                amountInBank = int(information[1][personIndex])
+                newAmount = amountInBank - quantityWithdrawn
+                correctName = True
+                break
+            else:
+                print(information[0])
+                print(person)
+
+        # New file created
+        newfile = open('money.txt', 'w+')
+        for i in range(len(information[0])):
+            for ix in range(len(information)):
+                newfile.write(information[ix][i])
+        newfile.close()
 
     def deposit(self, file_name):
         pass
@@ -110,7 +145,7 @@ def main():
             elif decision == 2:
                 user.printUsers(file_name)
             elif decision == 3:
-                userDescision = int(input("Press 1 to withdrawal money and 2 to add money."))
+                userDescision = int(input("Press 1 to withdrawal money and 2 to add money.\n"))
                 if userDescision == 1:
                     user.withdrawal(file_name)
                 elif userDescision == 2:
