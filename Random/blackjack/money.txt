@@ -1,10 +1,8 @@
 Bryce
-500
+400
 Landon
 500
 Parker
 500
 Sydney
 500
-Ryan
-1000000

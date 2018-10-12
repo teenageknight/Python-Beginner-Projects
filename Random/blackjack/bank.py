@@ -76,7 +76,7 @@ class User(object):
                 newfile.write(information[ix][i])
         newfile.close()
 
-    def withdrawal(self, file_name):
+    def withdrawOrDeposit(self, file_name):
         infile = open(file_name, 'r')
         info = infile.readlines()
         # Iterates over and gathers information before it is deleted
@@ -94,15 +94,34 @@ class User(object):
         information = [names,money]
         correctName = False
         while not correctName:
-            person = input("Who is the person withdrawing money?\n")+"\n"
-            if person in information[0]:
-                personIndex = information[0].index(person)
-                print("The amount of money that {0} has is ${1}.".format(information[0][personIndex].rstrip(), information[1][personIndex].rstrip()))
-                quantityWithdrawn = int(input("How much do you want to withdrawal?\n"))
-                amountInBank = int(information[1][personIndex])
-                newAmount = amountInBank - quantityWithdrawn
-                correctName = True
-                break
+            # FIXME: Add error suppression for if you put in an string instead of an integer
+            decision = int(input("Press 1 to withdrawl and 2 to deposit money.\n"))
+            if decision == 1:
+                person = input("Who is the person withdrawing money?\n")+"\n"
+                if person in information[0]:
+                    personIndex = information[0].index(person)
+                    print("The amount of money that {0} has is ${1}.".format(information[0][personIndex].rstrip(), information[1][personIndex].rstrip()))
+                    quantityWithdrawn = int(input("How much do you want to withdrawal?\n"))
+                    amountInBank = int(information[1][personIndex])
+                    newAmount = amountInBank - quantityWithdrawn
+                    del information[1][personIndex]
+                    information[1].insert(personIndex,str(newAmount)+"\n")
+                    correctName = True
+                    break
+
+            elif decision == 2:
+                person = input("Who is the person deposit money?\n")+"\n"
+                if person in information[0]:
+                    personIndex = information[0].index(person)
+                    print("The amount of money that {0} has is ${1}.".format(information[0][personIndex].rstrip(), information[1][personIndex].rstrip()))
+                    quantityDeposit = int(input("How much do you want to deposit?\n"))
+                    amountInBank = int(information[1][personIndex])
+                    newAmount = amountInBank + quantityDeposit
+                    del information[1][personIndex]
+                    information[1].insert(personIndex,str(newAmount)+"\n")
+                    correctName = True
+                    break
+
             else:
                 print(information[0])
                 print(person)
@@ -113,9 +132,6 @@ class User(object):
             for ix in range(len(information)):
                 newfile.write(information[ix][i])
         newfile.close()
-
-    def deposit(self, file_name):
-        pass
 
 def printMainMenu():
     print('''
@@ -145,11 +161,7 @@ def main():
             elif decision == 2:
                 user.printUsers(file_name)
             elif decision == 3:
-                userDescision = int(input("Press 1 to withdrawal money and 2 to add money.\n"))
-                if userDescision == 1:
-                    user.withdrawal(file_name)
-                elif userDescision == 2:
-                    user.deposit()
+                user.withdrawOrDeposit(file_name)
             elif decision == 4:
                 done == True
                 break
