@@ -1,30 +1,36 @@
 '''
     Filename: bank.py
-
-    Creater: Bryce
+    Creater: Bryce Jackson
+    Contact: bkajackson9@gmail.com
+             https://github.com/teenageknight
+    Program Defenition:
+        This program is designed to print out
 '''
 # Imports
 import os
 
+
 class User(object):
-    """docstring for User."""
-    # def __init__(self, arg):
-    #     self.arg = arg
+    """
+    docstring for User. This Class stores all of the information for creating
+    new users, printing their information and editing the amount of money that
+    they have. Their information is stored in a text file.
+    """
 
     def getUserFile(self):
         try:
             # Check and see if the file money.txt is there (Contains user data)
-            # FIXME: Consider changing to an excel file or .cvc for more writablility
-            with open("money.txt", "r"): file_name = "money.txt"
+            with open("money.txt", "r"):
+                file_name = "money.txt"
 
         except IOError:
             # If there is no file, it will produce an error. Pick a new file in this branch
             found_file = False
-            file_name = input("Please specify a text file containing user information (include the full file path if the file is in a different directory than the Hangman program):\n")
-
             while not(found_file):
                 try:
-                    with open(file_name, "r"): found_file= True
+                    file_name = input("\nPlease specify a text file containing user information (include the full file path if the file is in a different directory than the program):\n")
+                    with open(file_name, "r"):
+                        found_file = True
                 except IOError:
                     file_name
         return file_name
@@ -48,7 +54,8 @@ class User(object):
             for ix in range(len(information[i])):
                 print("{0} has ${1}.".format(information[i][ix],information[i+1][ix]))
 
-    def createNewUser(self, file_name):
+    # Opens and remove text file containing information. Returns information
+    def openFile(self, file_name):
         infile = open(file_name, 'r')
         info = infile.readlines()
         # Iterates over and gathers information before it is deleted
@@ -61,34 +68,31 @@ class User(object):
                 money.append(info[i])
         infile.close()
         os.remove(file_name)
+        return names, money
 
-        # Gets a new name and new amount of money for the new user.
-        newName = input("What is the new user's name:\n")
-        newMoney = input("How much money does the new user have:\n")
-        names.append(newName+"\n")
-        money.append(newMoney+"\n")
-        information = [names,money]
-
-        # New file created
+    # Creates a new file named 'money.txt' containing user information
+    def newFile(self, file_name, information):
         newfile = open('money.txt', 'w+')
         for i in range(len(information[0])):
             for ix in range(len(information)):
                 newfile.write(information[ix][i])
         newfile.close()
 
+    def createNewUser(self, file_name):
+        names, money = self.openFile(file_name)
+
+        # Gets a new name and new amount of money for the new user.
+        newName = input("What is the new user's name:\n")
+        newMoney = input("How much money does the new user have:\n")
+        names.append(newName+"\n")
+        money.append(newMoney+"\n")
+        information = [names, money]
+
+        # New file created
+        self.newFile(file_name, information)
+
     def withdrawOrDeposit(self, file_name):
-        infile = open(file_name, 'r')
-        info = infile.readlines()
-        # Iterates over and gathers information before it is deleted
-        names = []
-        money = []
-        for i in range(len(info)):
-            if i % 2 == 0:
-                names.append(info[i])
-            elif i % 2 == 1:
-                money.append(info[i])
-        infile.close()
-        os.remove(file_name)
+        names, money = self.openFile(file_name)
 
         # Gets a name of the person that is being withdrawn.
         information = [names,money]
@@ -127,11 +131,8 @@ class User(object):
                 print(person)
 
         # New file created
-        newfile = open('money.txt', 'w+')
-        for i in range(len(information[0])):
-            for ix in range(len(information)):
-                newfile.write(information[ix][i])
-        newfile.close()
+        self.newFile(file_name, information)
+
 
 def printMainMenu():
     print('''
@@ -146,6 +147,7 @@ def printMainMenu():
     *                                              *
     ************************************************
     ''')
+
 
 def main():
     user = User()
@@ -163,12 +165,12 @@ def main():
             elif decision == 3:
                 user.withdrawOrDeposit(file_name)
             elif decision == 4:
-                done == True
-                break
+                done = True
             else:
                 print("Enter a number from 1 to 4")
         except ValueError:
             print("Oops, somethings not right. Try entering a number from 1 to 4.")
+
 
 if __name__ == '__main__':
     main()
