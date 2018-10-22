@@ -1,14 +1,21 @@
-from nltk.tokenize import sent_tokenize, word_tokenize
 
-example_text = input("Enter a Sentence:\n")
+class Student(object):
 
-sentence_list = sent_tokenize(example_text)
-word_list = word_tokenize(example_text)
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        self.email = None
 
-print("\nThe sentence is...")
-for s in sentence_list:
-    print(s)
+    def assignEmail(self):
+        first, last= self.name.split(' ')
+        self.email = first + '.' + last + '@gocats.org'
+        print("{}.{}@gocats.org".format(first,last))
 
-print("\nThe words are...")
-for w in word_list:
-    print(w)
+    def doWork(self, arg):
+        pass
+
+name = str(input("What is their name?\n"))
+age = int(input("What is their age?\n"))
+student1 = Student(name, age)
+
+student1.assignEmail()
