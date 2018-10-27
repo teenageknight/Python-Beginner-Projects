@@ -13,6 +13,50 @@ TEAL = (0, 128, 128)
 WHITE = (255, 255, 255)
 # -------------------
 
+class Player(object):
+    """Creates a player and all of its information."""
+    def __init__(self, cards):
+        self.cards = cards
+        self.Turn = True
+        self.iteration = 0
+        self.flipped = 0
+        self.selectedCard = None
+        self.rect = pygame.Rect(725, 520, 71, 96)
+
+    def drawCard(self, screen, card_dict):
+        pygame.draw.rect(screen,BLACK,[self.rect.left,self.rect.top,71,96],2)
+        try:
+            screen.blit(card_dict[self.selectedCard],[self.rect.left,self.rect.top])
+        except Exception as e:
+            pass
+
+    def userTurn(self, deckList):
+        # If its the first turn this code will run
+        if self.iteration == 0:
+            for item in self.cards:
+                # Will return True if card is clicked
+                if self.flipped < 2:
+                    clicked = item.click_down()
+                    if clicked:
+                        self.flipped += 1
+                    print(self.flipped)
+                else:
+                    pass
+
+            if self.flipped == 2:
+                self.iteration = 1
+                self.Turn = False
+
+        # Runs until all cards are flipped and once it has run once
+        if self.flipped < 9 and self.iteration > 0:
+            for deck in deckList:
+                temp = deck.click_down()
+                if type(temp) == str:
+                    self.selectedCard = temp
+
+
+
+
 
 class Deck(object):
     """
@@ -59,6 +103,7 @@ class Deck_1(Deck):
         pos = self.checkPos()
         if pos:
             self.hidden = False
+            return True
 
 
 
@@ -76,9 +121,16 @@ class Deck_2(Deck):
         pygame.draw.rect(screen,BLACK,[self.rect.left,self.rect.top,71,96],2)
         pygame.draw.rect(screen, TEAL, [self.rect.left,self.rect.top,71,96])
 
-
     def click_down(self):
-        pass
+        pos = self.checkPos()
+        if pos:
+            # If card is clicked, the card will be returned and deleted from the list of cards
+            card=self.hidden_cards[0]
+            del self.hidden_cards[0]
+            if card != type(None):
+                return card
+
+
 
 
 class Deck_3(Deck):
@@ -103,7 +155,8 @@ class Deck_3(Deck):
     def click_down(self):
         pos = self.checkPos()
         if pos:
-            self.cards.append("ace_clubs")
+            if len(self.cards) == 0:
+                print("No cards")
 
 
 def shuffle_cards():
@@ -212,6 +265,19 @@ def main():
 
     deck_list[0].hidden_cards.extend(card_list)
 
+    # Assigns Players their decks
+    player1Cards = deck_list[1:10]
+    del deck_list[1:10]
+    player2Cards = deck_list[1:10]
+    del deck_list[1:10]
+
+    player1 = Player(player1Cards)
+    player2 = Player(player2Cards)
+    players = [player1, player2]
+
+    # Set the second players turn off so one player goes at a time.
+    player2.Turn = False
+
     # Extra Variables
     game_over = False
     font = pygame.font.Font(None, 25)
@@ -220,24 +286,38 @@ def main():
 
     # ------------- Main Program Loop --------------------
     while not done:
+        # First, clear the screen to white. Don't put other drawing commands
+        # above this, or they will be erased with this command.
+        screen.fill((GREEN))
+
         # --- Main event loop
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
 
             if event.type == pygame.MOUSEBUTTONUP:
-                for item in deck_list:
-                    item.click_down()
+                # If not one players turn its the others
+                if not player1.Turn:
+                    player2.Turn = True
+                if not player2.Turn:
+                    player1.Turn = True
+
+                # If one players turn, run their turn
+                if player1.Turn:
+                    player1.userTurn(deck_list)
+                elif player2.Turn:
+                    player2.userTurn(deck_list)
 
         # --- Game logic should go here
-
-        # First, clear the screen to white. Don't put other drawing commands
-        # above this, or they will be erased with this command.
-        screen.fill((GREEN))
 
         # --- Drawing code should go here
         for item in deck_list:
             item.drawCard(screen, card_dict)
+        for player in players:
+            player.drawCard(screen, card_dict)
+            for item in player.cards:
+                item.drawCard(screen, card_dict)
+
 
         # --- Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
