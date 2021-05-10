@@ -14,10 +14,12 @@ class InputOutString(object):
 
     def getString(self):
         self.s = str(input())
+        return self.s
 
     def printString(self):
-        print(self.s.upper())
+        return self.s.upper()
         
 strObj = InputOutString()
 strObj.getString()
-strObj.printString()
+
+print(strObj.printString())
