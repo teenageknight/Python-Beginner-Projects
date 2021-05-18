@@ -7,9 +7,6 @@ The numbers obtained should be printed in a comma-separated sequence on a single
 
 num = []
 
-for i in range(2000,3200):
+for i in range(2000,3201):
     if i%7 == 0 and i%5 != 0:
         print(i, end = ',')
-        i += 1
-    else:
-        i += 1
